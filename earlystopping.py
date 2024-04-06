@@ -1,5 +1,3 @@
-import torch
-import os
 
 class EarlyStopping(object):
     def __init__(self, patience=5):
