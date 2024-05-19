@@ -23,7 +23,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
 def CRFA_train(X, y, tmp_path, batch_size=1024, num_epochs=200, 
-               lr=1e-3, window_size = 9):
+               lr=1e-3, window_size = 9, nb_class=2, dataset="deap"):
     
     num_channels, num_points = X.shape[1], X.shape[2]
     acc = []
@@ -31,46 +31,9 @@ def CRFA_train(X, y, tmp_path, batch_size=1024, num_epochs=200,
     for fold_idx, (idx_train, idx_test) in enumerate(cv.split(X)):
         
         X_train, y_train, X_test, y_test = X[idx_train], y[idx_train], X[idx_test], y[idx_test]
-        
-        train_loader = build_dataloader(X_train, y_train, batch_size, True)
-        test_loader = build_dataloader(X_test, y_test, batch_size, True)
-        
-        net = CRFAEmotionNet(num_channels=num_channels, num_points=num_points, window_size=window_size)
-        
-        optimizer = optim.Adam(net.parameters(), lr=lr)
-        loss_function = nn.CrossEntropyLoss()
-        
-        since = time.time()
-        net, history = train(net, 
-                             train_loader=train_loader, 
-                             test_loader=test_loader, 
-                             num_epochs=num_epochs, 
-                             optimizer=optimizer,
-                             criterion=loss_function,
-                             is_early_stopping=True,
-                             early_stop_step=10)
-        
-        acc.append(history["test_acc"][-1])
-        print("fold: {}, param: {},  time: {}".format(fold_idx, sum(param.numel() for param in net.parameters()), time.time() - since))
-        
-        # torch.save(net, tmp_path + "/fold_{}_net.pth".format(fold_idx))
-        # with open("tmp_path\\fold_{}.pkl".format(fold_idx), "wb") as f:
-        #     pickle.dump(history, f)
-    print(np.mean(acc), np.std(acc))
-    return acc
-
-
-def CRFA_train(X, y, tmp_path, batch_size=1024, num_epochs=200, 
-               lr=1e-3, window_size = 9, nb_class=2):
-    
-    num_channels, num_points = X.shape[1], X.shape[2]
-    acc = []
-    cv = KFold(n_splits=10, shuffle=True, random_state=SEED)
-    for fold_idx, (idx_train, idx_test) in enumerate(cv.split(X)):
-        
-        X_train, y_train, X_test, y_test = X[idx_train], y[idx_train], X[idx_test], y[idx_test]
-        X_train = normalization(X_train)
-        X_test = normalization(X_test)
+        if dataset == "seed":
+            X_train = normalization(X_train)
+            X_test = normalization(X_test)
         train_loader = build_dataloader(X_train, y_train, batch_size, True)
         test_loader = build_dataloader(X_test, y_test, batch_size, True)
         
@@ -125,7 +88,7 @@ def train_subject_dependent(args):
 # for seed
 def train_subject_independent_for_seed(args):
     X, y, _ = load_data(args.path, data_name="SEED", session=args.session)  
-    CRFA_train(X, y, args.tmp+"seed\\{}\\".format(args.session),  num_epochs=200, window_size=1, nb_class=3)
+    CRFA_train(X, y, args.tmp+"seed\\{}\\".format(args.session),  num_epochs=200, window_size=1, nb_class=3, dataset="seed")
 
 
 
