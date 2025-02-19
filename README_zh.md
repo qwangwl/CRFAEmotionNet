@@ -1,25 +1,23 @@
-## CRFAEmotionNet
+### CRFAEmotionNet
 
-<a href="./README_zh.md">中文版</a>
+论文名称：A Two-Stream Channel Reconstruction and Feature Attention Network for EEG Emotion Recognition
 
-**Paper Title:** A Two-Stream Channel Reconstruction and Feature Attention Network for EEG Emotion Recognition
+对代码进行了简单的重构，以便于更加清晰明了的阅读。修改了一些简单的超参。以便于更好的实现。
 
-I have performed a simple refactor of the code for clearer readability and modified some basic hyperparameters for better performance.
+对DEAP数据集的受试者独立和受试者依赖进行了实验。所进行实验建立在将受试者的影片进行了1s的窗口切分并进行打乱。
 
-Experiments were conducted on the DEAP dataset with both subject-independent and subject-dependent setups. The experiments were based on splitting the video stimuli of each subject into 1-second windows and then shuffling them.
+具体的，所进行实验结果如下表所示：
 
-Specifically, the experimental results are shown in the tables below:
-
-**Table 1. Subject-Independent Experiment on the DEAP Dataset**
+<center> 表1. 对DEAP数据集受试者独立进行的实验 </center>
 
 | Emotion | ACC                 |
 | ------- | ------------------- |
-| Valence | 0.98272$\pm$0.00124 |
-| Arousal | 0.98306$\pm$0.00168 |
+| valence | 0.98272$\pm$0.00124 |
+| arousal | 0.98306$\pm$0.00168 |
 
-**Table 2. Subject-Dependent Experiment on the DEAP Dataset**
+<center>表2. 对DEAP数据集受试者依赖进行的实验</center>
 
-| Sub  | Arousal            | Valence            | Sub  | Arousal            | Valence            |
+| sub  | arousal            | valence            | sub  | arousal            | valence            |
 | ---- | ------------------ | ------------------ | ---- | ------------------ | ------------------ |
 | 1    | 0.9991666666666668 | 0.9995833333333334 | 17   | 0.9833333333333332 | 0.9833333333333334 |
 | 2    | 0.9858333333333332 | 0.9920833333333334 | 18   | 0.9895833333333334 | 0.9916666666666668 |
@@ -38,17 +36,18 @@ Specifically, the experimental results are shown in the tables below:
 | 15   | 0.9958333333333333 | 0.9929166666666667 | 31   | 0.9970833333333333 | 0.9979166666666668 |
 | 16   | 0.9966666666666668 | 0.9962500000000001 | 32   | 0.9929166666666667 | 0.99375            |
 
-In addition, we performed extra experiments on the SEED dataset. Since directly using the raw signals from the SEED dataset would lead to too many parameters for the classifier, we only used DE features for a brief test and also changed the window size to 1.
 
-| Session | ACC                |
+
+此外，我们对SEED数据集进行了额外的实验，由于直接使用SEED数据集的原始信号会导致分类块的参数过多，我们仅使用了DE特征进行了简要的测试，此外，将窗口大小改成了1。
+
+| session | acc                |
 | ------- | ------------------ |
 | 1       | 0.999901787468081  |
 | 2       | 0.9999410724808486 |
 | 3       | 0.9999803574936162 |
 
-When all the videos were split and used for experiments, the accuracy was ridiculously high. The main reason is that the samples from the same video were highly similar, which means that part of the test set was already seen by the model during training.
+将所有影片切开再进行实验，准确率高的离谱了奥，主要原因还是在于同一个影片的样本高度相似。在某种程度上训练集见到了测试集的部分信息。
 
-After completing these experiments, I didn’t feel like modifying the code anymore, so I’m wrapping it up here.
+做完这几个实验，就懒得再改代码了。所以终结。
 
-The next step will be focusing on cross-video or cross-subject experiments.
-
+还是要往跨影片或者跨受试者发力。
